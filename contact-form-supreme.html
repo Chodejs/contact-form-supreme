@@ -1,0 +1,130 @@
+
+
+<div>
+    <input type="text" name="user-name" id="user-name" placeholder="Name - Required">
+    <br>
+    <input type="email" name="user-email" id="user-email" placeholder="Email - Required">
+    <br>
+    <input type="tel" name="user-phone" id="user-phone" placeholder="Phone Number (optional)" maxlength="14">
+    <br>
+
+    <label for="option1">Job Type 1
+        <input type="radio" name="radio" id="user-choice1">
+    </label>
+    <label for="option1">Job Type 2
+        <input type="radio" name="radio" id="user-choice2">
+    </label>
+    <label for="option1">Job Type 3
+        <input type="radio" name="radio" id="user-choice3">
+    </label>
+  
+    <br>
+    <textarea name="user-text" id="user-text" cols="30" rows="10" placeholder="How Can We Help With Your Project?"></textarea>
+    <br>
+    <button id="submit-button">Submit</button>
+</div>
+
+<div id="error-div"></div>
+
+<script>
+
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+    const userPhone = document.getElementById('user-phone');
+    const userChoice1 = document.getElementById('user-choice1');
+    const userChoice2 = document.getElementById('user-choice2');
+    const userChoice3 = document.getElementById('user-choice3');
+    const userText = document.getElementById('user-text');
+    const errorDiv = document.getElementById('error-div');
+    const submitButton = document.getElementById('submit-button');
+
+    function cleanse(unsafe)
+{
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/--/g, "")
+         .replace(/'/g, "&#039;");
+ }
+
+ function clearForm(){
+    userName.value = '';
+    userEmail.value = '';
+    userText.value = '';
+    userPhone.value = '';
+    userChoice1.checked = false;
+    userChoice2.checked = false;
+    userChoice3.checked = false;
+    console.log("Form Cleared");
+ }
+
+ submitButton.addEventListener('click', () => {
+        emailForm();
+    });
+
+function emailForm(){
+
+    const email = [];
+
+    if(!userName.value){
+        let err = new Error("Contact Name is Required");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    }
+    if(userName.value.length > 25){
+        let err = new Error("Name Field Contains Too Many Characters");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    } else {
+        const cleansedName = cleanse(userName.value);
+        email.push(cleansedName);
+    }
+
+    if(!userEmail.value){
+        let err = new Error("Email Address is Required");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    }else if(userEmail.value.length > 35){
+        let err = new Error("Email Field Contains Too Many Characters");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    } else {
+        email.push(cleanse(userEmail.value));
+    }
+
+    if(userChoice1.checked === true){
+        email.push("Option 1 Selected");
+    } else if (userChoice2.checked === true){
+        email.push("Option 2 Selected");
+    } else if(userChoice3.checked === true){
+        email.push("Option 3 Selected");
+    } else if(userChoice1.checked === false && userChoice2.checked === false && userChoice3.checked === false){
+        let err = new Error("Job Type is Required");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    }
+
+    if(!userText.value){
+        let err = new Error("Project Description is Required");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    } else if(userText.value.length > 199){
+        let err = new Error("Project Description Must be Under 200 Characters");
+        errorDiv.innerHTML = `<h3>${err}</h3>`;
+        return err;
+    } else {
+        email.push(cleanse(userText.value)); 
+    }
+
+    if(userPhone.value){
+        email.push(cleanse(userPhone.value));
+    }
+    console.log(email);
+    clearForm();
+    errorDiv.innerHTML = "<h3>Thank you for your submission. We will contact you within 24 hours</h3>"
+
+    return email;
+}
+</script>
